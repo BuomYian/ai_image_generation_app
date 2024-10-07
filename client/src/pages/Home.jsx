@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Loader, Card, FormField } from "../components";
+import PropTypes from "prop-types";
 
 const RenderCards = ({ data, title }) => {
   if (data?.length > 0) {
@@ -8,6 +9,11 @@ const RenderCards = ({ data, title }) => {
   return (
     <h2 className="mt-5 font-bold text-[#6449ff] text-xl uppercase">{title}</h2>
   );
+};
+
+RenderCards.propTypes = {
+  data: PropTypes.array,
+  title: PropTypes.string.isRequired,
 };
 
 const Home = () => {
@@ -51,10 +57,10 @@ const Home = () => {
       setTimeout(() => {
         const searchResults = allPosts.filter(
           (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.prompt.toLowerCase().includes(searchText.toLowerCase())
+            item.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            item.prompt.toLowerCase().includes(e.target.value.toLowerCase())
         );
-        setSearchResults();
+        setSearchResults(searchResults); // Fix: Pass the searchResults
       }, 500)
     );
   };
@@ -98,11 +104,11 @@ const Home = () => {
             <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
               {searchText ? (
                 <RenderCards
-                  data={[searchResults]}
+                  data={searchResults}
                   title="No search results found"
                 />
               ) : (
-                <RenderCards data={[allPosts]} title="No posts found" />
+                <RenderCards data={allPosts} title="No posts found" />
               )}
             </div>
           </>

@@ -29,9 +29,18 @@ router.route("/").post(async (req, res) => {
     res.status(200).json({ photo: image });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .send(error?.response?.data?.error?.message || "Something went wrong!");
+
+    if (error.error && error.error.code === "billing_hard_limit_reached") {
+      res.status(402).json({
+        error:
+          "OpenAI API usage limit reached. Please try again later or contact the administrator.",
+      });
+    } else {
+      res.status(500).json({
+        error:
+          "An error occurred while generating the image. Please try again.",
+      });
+    }
   }
 });
 
